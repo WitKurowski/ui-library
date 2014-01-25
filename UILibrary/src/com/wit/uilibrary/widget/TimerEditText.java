@@ -3,6 +3,7 @@ package com.wit.uilibrary.widget;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -14,6 +15,55 @@ import android.view.animation.Animation;
 import android.widget.EditText;
 
 public class TimerEditText extends EditText {
+	public static class TimerEditTextCountDownTimer extends CountDownTimer {
+		private final TimerEditText timeRemainingTimerEditText;
+
+		public TimerEditTextCountDownTimer( final long millisInFuture,
+				final long countDownInterval,
+				final TimerEditText timeRemainingTimerEditText ) {
+			super( millisInFuture, countDownInterval );
+
+			this.timeRemainingTimerEditText = timeRemainingTimerEditText;
+		}
+
+		@Override
+		public void onFinish() {
+			this.timeRemainingTimerEditText.reset();
+		}
+
+		@Override
+		public void onTick( final long millisUntilFinished ) {
+			final long secondsUntilFinished =
+					(long) Math.ceil( millisUntilFinished / 1000d );
+			final long minutesUntilFinished =
+					(long) Math.ceil( secondsUntilFinished / 60 );
+			final long hoursUntilFinished =
+					(long) Math.ceil( minutesUntilFinished / 60 );
+			final long secondsToDisplay = secondsUntilFinished % 60;
+			final long minutesToDisplay = minutesUntilFinished % 60;
+			final long hoursToDisplay = hoursUntilFinished;
+			final StringBuffer timeRemaining = new StringBuffer();
+
+			if ( hoursToDisplay > 0 ) {
+				timeRemaining.append( hoursToDisplay + ":" );
+			}
+
+			if ( minutesToDisplay <= 9 ) {
+				timeRemaining.append( "0" );
+			}
+
+			timeRemaining.append( minutesToDisplay );
+
+			if ( secondsToDisplay <= 9 ) {
+				timeRemaining.append( "0" );
+			}
+
+			timeRemaining.append( secondsToDisplay );
+
+			this.timeRemainingTimerEditText.setText( timeRemaining );
+		}
+	}
+
 	private class TimeRemainingOnClickListener implements View.OnClickListener {
 		private final EditText timeRemainingEditText;
 
