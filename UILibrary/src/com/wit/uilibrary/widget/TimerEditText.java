@@ -3,7 +3,6 @@ package com.wit.uilibrary.widget;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
-import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -15,10 +14,10 @@ import android.view.animation.Animation;
 import android.widget.EditText;
 
 public class TimerEditText extends EditText {
-	public static class TimerEditTextCountDownTimer extends CountDownTimer {
+	public static class CountDownTimer extends android.os.CountDownTimer {
 		private final TimerEditText timeRemainingTimerEditText;
 
-		public TimerEditTextCountDownTimer( final long millisInFuture,
+		public CountDownTimer( final long millisInFuture,
 				final long countDownInterval,
 				final TimerEditText timeRemainingTimerEditText ) {
 			super( millisInFuture, countDownInterval );
