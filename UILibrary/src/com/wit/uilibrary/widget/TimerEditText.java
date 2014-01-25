@@ -180,6 +180,8 @@ public class TimerEditText extends EditText {
 		this.setOnEditorActionListener( null );
 		this.setOnFocusChangeListener( timeRemainingOnFocusChangeListener );
 		this.setTypeface();
+
+		this.reset();
 	}
 
 	public void blink() {
@@ -196,6 +198,7 @@ public class TimerEditText extends EditText {
 
 	public void reset() {
 		this.setText( TimerEditText.DEFAULT_TIME_REMAINING_STRING );
+		this.setSelection( TimerEditText.DEFAULT_TIME_REMAINING_STRING.length() );
 
 		if ( this.isEnabled() ) {
 			this.blink();
