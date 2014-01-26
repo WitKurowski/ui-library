@@ -241,6 +241,33 @@ public class TimerEditText extends EditText {
 		this.startAnimation( TimerEditText.TIMER_FADE_OUT_ANIMATION );
 	}
 
+	public long getTime() {
+		String remainingString = this.getText().toString();
+		int colonIndex = remainingString.indexOf( ':' );
+		long time = 0;
+
+		if ( remainingString.length() > 5 ) {
+			final long hours =
+					Long.parseLong( remainingString.substring( 0, colonIndex ) );
+
+			time += hours * 60 * 60 * 1000;
+			remainingString = remainingString.substring( colonIndex + 1 );
+			colonIndex = remainingString.indexOf( ':' );
+		}
+
+		final long minutes =
+				Long.parseLong( remainingString.substring( 0, colonIndex ) );
+
+		time += minutes * 60 * 1000;
+		remainingString = remainingString.substring( colonIndex + 1 );
+
+		final long seconds = Long.parseLong( remainingString );
+
+		time += seconds * 1000;
+
+		return time;
+	}
+
 	public void hide() {
 		this.startAnimation( TimerEditText.TIMER_HIDE_ANIMATION );
 	}
