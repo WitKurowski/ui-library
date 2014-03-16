@@ -14,22 +14,40 @@ public abstract class SimpleSpinnerAdapter<T> implements SpinnerAdapter {
 	private final List<T> objects;
 	private final int itemViewResourceId;
 	private final int dropDownItemViewResourceId;
+	private final boolean hasDefaultOption;
+	private final String defaultOptionString;
 
 	public SimpleSpinnerAdapter( final List<T> objects ) {
 		this( objects, android.R.layout.simple_spinner_item,
-				android.R.layout.simple_spinner_dropdown_item );
+				android.R.layout.simple_spinner_dropdown_item, null );
 	}
 
 	public SimpleSpinnerAdapter( final List<T> objects,
-			final int itemViewResourceId, final int dropDownItemViewResourceId ) {
+			final int itemViewResourceId, final int dropDownItemViewResourceId,
+			final String defaultOptionString ) {
 		this.objects = objects;
 		this.itemViewResourceId = itemViewResourceId;
 		this.dropDownItemViewResourceId = dropDownItemViewResourceId;
+		this.hasDefaultOption = defaultOptionString != null;
+		this.defaultOptionString = defaultOptionString;
+	}
+
+	public SimpleSpinnerAdapter( final List<T> objects,
+			final String defaultOptionString ) {
+		this( objects, android.R.layout.simple_spinner_item,
+				android.R.layout.simple_spinner_dropdown_item,
+				defaultOptionString );
 	}
 
 	@Override
 	public int getCount() {
-		return this.objects.size();
+		int count = this.objects.size();
+
+		if ( this.hasDefaultOption ) {
+			++count;
+		}
+
+		return count;
 	}
 
 	@Override
@@ -55,7 +73,23 @@ public abstract class SimpleSpinnerAdapter<T> implements SpinnerAdapter {
 
 	@Override
 	public T getItem( final int position ) {
-		return this.objects.get( position );
+		final int adjustedPosition;
+
+		if ( this.hasDefaultOption ) {
+			adjustedPosition = position - 1;
+		} else {
+			adjustedPosition = position;
+		}
+
+		final T item;
+
+		if ( adjustedPosition >= 0 ) {
+			item = this.objects.get( adjustedPosition );
+		} else {
+			item = null;
+		}
+
+		return item;
 	}
 
 	@Override
@@ -103,7 +137,7 @@ public abstract class SimpleSpinnerAdapter<T> implements SpinnerAdapter {
 
 	@Override
 	public boolean isEmpty() {
-		return this.objects.isEmpty();
+		return this.objects.isEmpty() && !this.hasDefaultOption;
 	}
 
 	@Override
@@ -113,8 +147,14 @@ public abstract class SimpleSpinnerAdapter<T> implements SpinnerAdapter {
 	private void setText( final View rootView, final int position ) {
 		final TextView textView =
 				(TextView) rootView.findViewById( android.R.id.text1 );
-		final T object = this.getItem( position );
-		final String text = this.getText( object );
+		final String text;
+
+		if ( ( position == 0 ) && this.hasDefaultOption ) {
+			text = this.defaultOptionString;
+		} else {
+			final T object = this.getItem( position );
+			text = this.getText( object );
+		}
 
 		textView.setText( text );
 	}
