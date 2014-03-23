@@ -126,7 +126,7 @@ public class TimerEditText extends EditText {
 				}
 
 				if ( oldTimeRemainingString.length() == 0 ) {
-					this.timeRemainingTimerEditText.reset();
+					this.timeRemainingTimerEditText.reset( editable );
 				} else {
 					final String newTimeRemainingString;
 
@@ -180,7 +180,7 @@ public class TimerEditText extends EditText {
 		}
 	}
 
-	private static final String DEFAULT_TIME_REMAINING_STRING = "00:00";
+	public static final String DEFAULT_TIME_REMAINING_STRING = "00:00";
 	private static final AlphaAnimation TIMER_BLINKING_ANIMATION =
 			new AlphaAnimation( 1.0f, 0.0f );
 	private static final AlphaAnimation TIMER_FADE_OUT_ANIMATION =
@@ -274,6 +274,16 @@ public class TimerEditText extends EditText {
 
 	public void reset() {
 		this.setText( TimerEditText.DEFAULT_TIME_REMAINING_STRING );
+		this.setSelection( TimerEditText.DEFAULT_TIME_REMAINING_STRING.length() );
+
+		if ( this.isEnabled() ) {
+			this.blink();
+		}
+	}
+
+	public void reset( final Editable editable ) {
+		editable.replace( 0, editable.length(),
+				TimerEditText.DEFAULT_TIME_REMAINING_STRING );
 		this.setSelection( TimerEditText.DEFAULT_TIME_REMAINING_STRING.length() );
 
 		if ( this.isEnabled() ) {
