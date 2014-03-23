@@ -1,5 +1,8 @@
 package com.wit.uilibrary.widget;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
@@ -27,6 +30,13 @@ public class TimerEditText extends EditText {
 
 		@Override
 		public void onFinish() {
+			final List<OnCountdownFinishedListener> onCountdownFinishedListeners =
+					this.timeRemainingTimerEditText.onCountdownFinishedListeners;
+
+			for ( final OnCountdownFinishedListener onCountdownFinishedListener : onCountdownFinishedListeners ) {
+				onCountdownFinishedListener.onFinished();
+			}
+
 			this.timeRemainingTimerEditText.reset();
 		}
 
@@ -61,6 +71,10 @@ public class TimerEditText extends EditText {
 
 			this.timeRemainingTimerEditText.setText( timeRemaining );
 		}
+	}
+
+	public interface OnCountdownFinishedListener {
+		public void onFinished();
 	}
 
 	private class TimeRemainingOnClickListener implements View.OnClickListener {
@@ -187,6 +201,8 @@ public class TimerEditText extends EditText {
 			new AlphaAnimation( 1.0f, 0.0f );
 	private static final AlphaAnimation TIMER_HIDE_ANIMATION =
 			new AlphaAnimation( 1.0f, 0.0f );
+	private final List<OnCountdownFinishedListener> onCountdownFinishedListeners =
+			new ArrayList<OnCountdownFinishedListener>();
 
 	static {
 		TimerEditText.TIMER_BLINKING_ANIMATION.setDuration( 100 );
@@ -233,6 +249,11 @@ public class TimerEditText extends EditText {
 		this.reset();
 	}
 
+	public void addOnCountdownFinishedListener(
+			final OnCountdownFinishedListener onCountdownFinishedListener ) {
+		this.onCountdownFinishedListeners.add( onCountdownFinishedListener );
+	}
+
 	public void blink() {
 		this.startAnimation( TimerEditText.TIMER_BLINKING_ANIMATION );
 	}
@@ -270,6 +291,11 @@ public class TimerEditText extends EditText {
 
 	public void hide() {
 		this.startAnimation( TimerEditText.TIMER_HIDE_ANIMATION );
+	}
+
+	public void removeOnCountdownFinishedListener(
+			final OnCountdownFinishedListener onCountdownFinishedListener ) {
+		this.onCountdownFinishedListeners.remove( onCountdownFinishedListener );
 	}
 
 	public void reset() {
