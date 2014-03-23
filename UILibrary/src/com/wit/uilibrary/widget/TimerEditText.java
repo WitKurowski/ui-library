@@ -31,7 +31,7 @@ public class TimerEditText extends EditText {
 		@Override
 		public void onFinish() {
 			final List<OnCountdownFinishedListener> onCountdownFinishedListeners =
-					this.timeRemainingTimerEditText.onCountdownFinishedListeners;
+					this.timeRemainingTimerEditText.getOnCountdownFinishedListeners();
 
 			for ( final OnCountdownFinishedListener onCountdownFinishedListener : onCountdownFinishedListeners ) {
 				onCountdownFinishedListener.onFinished();
@@ -260,6 +260,10 @@ public class TimerEditText extends EditText {
 
 	public void fadeOut() {
 		this.startAnimation( TimerEditText.TIMER_FADE_OUT_ANIMATION );
+	}
+
+	public List<OnCountdownFinishedListener> getOnCountdownFinishedListeners() {
+		return this.onCountdownFinishedListeners;
 	}
 
 	public long getTime() {
