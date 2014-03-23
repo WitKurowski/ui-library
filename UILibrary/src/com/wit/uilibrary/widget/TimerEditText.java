@@ -297,6 +297,10 @@ public class TimerEditText extends EditText {
 		this.startAnimation( TimerEditText.TIMER_HIDE_ANIMATION );
 	}
 
+	public void removeAllOnCountDownFinishedListeners() {
+		this.onCountDownFinishedListeners.clear();
+	}
+
 	public void removeOnCountDownFinishedListener(
 			final OnCountDownFinishedListener onCountDownFinishedListener ) {
 		this.onCountDownFinishedListeners.remove( onCountDownFinishedListener );
