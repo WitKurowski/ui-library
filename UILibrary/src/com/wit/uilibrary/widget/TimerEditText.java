@@ -30,11 +30,11 @@ public class TimerEditText extends EditText {
 
 		@Override
 		public void onFinish() {
-			final List<OnCountdownFinishedListener> onCountdownFinishedListeners =
+			final List<OnCountDownFinishedListener> onCountDownFinishedListeners =
 					this.timeRemainingTimerEditText.getOnCountdownFinishedListeners();
 
-			for ( final OnCountdownFinishedListener onCountdownFinishedListener : onCountdownFinishedListeners ) {
-				onCountdownFinishedListener.onFinished();
+			for ( final OnCountDownFinishedListener onCountDownFinishedListener : onCountDownFinishedListeners ) {
+				onCountDownFinishedListener.onFinished();
 			}
 
 			this.timeRemainingTimerEditText.reset();
@@ -73,7 +73,7 @@ public class TimerEditText extends EditText {
 		}
 	}
 
-	public interface OnCountdownFinishedListener {
+	public interface OnCountDownFinishedListener {
 		public void onFinished();
 	}
 
@@ -201,8 +201,8 @@ public class TimerEditText extends EditText {
 			new AlphaAnimation( 1.0f, 0.0f );
 	private static final AlphaAnimation TIMER_HIDE_ANIMATION =
 			new AlphaAnimation( 1.0f, 0.0f );
-	private final List<OnCountdownFinishedListener> onCountdownFinishedListeners =
-			new ArrayList<OnCountdownFinishedListener>();
+	private final List<OnCountDownFinishedListener> onCountDownFinishedListeners =
+			new ArrayList<OnCountDownFinishedListener>();
 
 	static {
 		TimerEditText.TIMER_BLINKING_ANIMATION.setDuration( 100 );
@@ -250,8 +250,8 @@ public class TimerEditText extends EditText {
 	}
 
 	public void addOnCountdownFinishedListener(
-			final OnCountdownFinishedListener onCountdownFinishedListener ) {
-		this.onCountdownFinishedListeners.add( onCountdownFinishedListener );
+			final OnCountDownFinishedListener onCountDownFinishedListener ) {
+		this.onCountDownFinishedListeners.add( onCountDownFinishedListener );
 	}
 
 	public void blink() {
@@ -262,8 +262,8 @@ public class TimerEditText extends EditText {
 		this.startAnimation( TimerEditText.TIMER_FADE_OUT_ANIMATION );
 	}
 
-	public List<OnCountdownFinishedListener> getOnCountdownFinishedListeners() {
-		return this.onCountdownFinishedListeners;
+	public List<OnCountDownFinishedListener> getOnCountdownFinishedListeners() {
+		return this.onCountDownFinishedListeners;
 	}
 
 	public long getTime() {
@@ -298,8 +298,8 @@ public class TimerEditText extends EditText {
 	}
 
 	public void removeOnCountdownFinishedListener(
-			final OnCountdownFinishedListener onCountdownFinishedListener ) {
-		this.onCountdownFinishedListeners.remove( onCountdownFinishedListener );
+			final OnCountDownFinishedListener onCountDownFinishedListener ) {
+		this.onCountDownFinishedListeners.remove( onCountDownFinishedListener );
 	}
 
 	public void reset() {
