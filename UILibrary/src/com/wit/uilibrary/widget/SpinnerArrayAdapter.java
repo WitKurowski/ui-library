@@ -22,6 +22,12 @@ public abstract class SpinnerArrayAdapter<T> extends ArrayAdapter<T> {
 	}
 
 	public SpinnerArrayAdapter( final Context context, final List<T> objects,
+			final int itemViewResourceId, final int dropDownItemViewResourceId ) {
+		this( context, objects, itemViewResourceId, dropDownItemViewResourceId,
+				null );
+	}
+
+	public SpinnerArrayAdapter( final Context context, final List<T> objects,
 			final int itemViewResourceId, final int dropDownItemViewResourceId,
 			final String defaultOptionString ) {
 		super( context, -1, objects );
