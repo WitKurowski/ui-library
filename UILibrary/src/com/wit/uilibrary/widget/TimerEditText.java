@@ -70,6 +70,7 @@ public class TimerEditText extends EditText {
 			timeRemaining.append( secondsToDisplay );
 
 			this.timeRemainingTimerEditText.setText( timeRemaining );
+			this.timeRemainingTimerEditText.clearFocus();
 		}
 	}
 
