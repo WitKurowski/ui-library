@@ -30,14 +30,14 @@ public class TimerEditText extends EditText {
 
 		@Override
 		public void onFinish() {
+			this.timeRemainingTimerEditText.reset();
+
 			final List<OnCountDownFinishedListener> onCountDownFinishedListeners =
 					this.timeRemainingTimerEditText.getOnCountDownFinishedListeners();
 
 			for ( final OnCountDownFinishedListener onCountDownFinishedListener : onCountDownFinishedListeners ) {
 				onCountDownFinishedListener.onFinished();
 			}
-
-			this.timeRemainingTimerEditText.reset();
 		}
 
 		@Override
