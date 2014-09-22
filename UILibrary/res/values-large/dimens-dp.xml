@@ -1,0 +1,24 @@
+<resources>
+	<dimen name="_1dp">3dp</dimen>
+	<dimen name="_2dp">6dp</dimen>
+	<dimen name="_3dp">9dp</dimen>
+	<dimen name="_4dp">12dp</dimen>
+	<dimen name="_5dp">15dp</dimen>
+	<dimen name="_7dp">21dp</dimen>
+	<dimen name="_8dp">24dp</dimen>
+	<dimen name="_10dp">30dp</dimen>
+	<dimen name="_13dp">39dp</dimen>
+	<dimen name="_18dp">54dp</dimen>
+	<dimen name="_20dp">60dp</dimen>
+	<dimen name="_30dp">90dp</dimen>
+	<dimen name="_32dp">96dp</dimen>
+	<dimen name="_35dp">105dp</dimen>
+	<dimen name="_38dp">114dp</dimen>
+	<dimen name="_42dp">126dp</dimen>
+	<dimen name="_60dp">180dp</dimen>
+	<dimen name="_85dp">255dp</dimen>
+	<dimen name="_105dp">315dp</dimen>
+	<dimen name="_175dp">425dp</dimen>
+
+	<dimen name="neg_4dp">-12dp</dimen>
+</resources>
