@@ -10,6 +10,7 @@
 	<dimen name="_13dp">26dp</dimen>
 	<dimen name="_18dp">36dp</dimen>
 	<dimen name="_20dp">40dp</dimen>
+	<dimen name="_24dp">48dp</dimen>
 	<dimen name="_30dp">60dp</dimen>
 	<dimen name="_32dp">64dp</dimen>
 	<dimen name="_35dp">70dp</dimen>
