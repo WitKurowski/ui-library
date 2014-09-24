@@ -15,6 +15,7 @@
 	<dimen name="_32dp">128dp</dimen>
 	<dimen name="_35dp">140dp</dimen>
 	<dimen name="_38dp">152dp</dimen>
+	<dimen name="_40dp">160dp</dimen>
 	<dimen name="_42dp">168dp</dimen>
 	<dimen name="_60dp">240dp</dimen>
 	<dimen name="_85dp">340dp</dimen>

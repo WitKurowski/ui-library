@@ -15,6 +15,7 @@
 	<dimen name="_32dp">96dp</dimen>
 	<dimen name="_35dp">105dp</dimen>
 	<dimen name="_38dp">114dp</dimen>
+	<dimen name="_40dp">120dp</dimen>
 	<dimen name="_42dp">126dp</dimen>
 	<dimen name="_60dp">180dp</dimen>
 	<dimen name="_85dp">255dp</dimen>
