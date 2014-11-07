@@ -1,4 +1,4 @@
-package com.wit.uilibrary.widget;
+package com.wit.uilibrary.timer.widget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.EditText;
+
+import com.wit.uilibrary.timer.util.TimerEditTextUtils;
 
 public class TimerEditText extends EditText {
 	public static class CountDownTimer extends android.os.CountDownTimer {
@@ -42,32 +44,7 @@ public class TimerEditText extends EditText {
 
 		@Override
 		public void onTick( final long millisUntilFinished ) {
-			final long secondsUntilFinished =
-					(long) Math.ceil( millisUntilFinished / 1000d );
-			final long minutesUntilFinished =
-					(long) Math.ceil( secondsUntilFinished / 60 );
-			final long hoursUntilFinished =
-					(long) Math.ceil( minutesUntilFinished / 60 );
-			final long secondsToDisplay = secondsUntilFinished % 60;
-			final long minutesToDisplay = minutesUntilFinished % 60;
-			final long hoursToDisplay = hoursUntilFinished;
-			final StringBuffer timeRemaining = new StringBuffer();
-
-			if ( hoursToDisplay > 0 ) {
-				timeRemaining.append( hoursToDisplay + ":" );
-			}
-
-			if ( minutesToDisplay <= 9 ) {
-				timeRemaining.append( "0" );
-			}
-
-			timeRemaining.append( minutesToDisplay );
-
-			if ( secondsToDisplay <= 9 ) {
-				timeRemaining.append( "0" );
-			}
-
-			timeRemaining.append( secondsToDisplay );
+			final String timeRemaining = TimerEditTextUtils.createTimeString( millisUntilFinished );
 
 			this.timeRemainingTimerEditText.setText( timeRemaining );
 			this.timeRemainingTimerEditText.clearFocus();
@@ -268,28 +245,8 @@ public class TimerEditText extends EditText {
 	}
 
 	public long getTime() {
-		String remainingString = this.getText().toString();
-		int colonIndex = remainingString.indexOf( ':' );
-		long time = 0;
-
-		if ( remainingString.length() > 5 ) {
-			final long hours =
-					Long.parseLong( remainingString.substring( 0, colonIndex ) );
-
-			time += hours * 60 * 60 * 1000;
-			remainingString = remainingString.substring( colonIndex + 1 );
-			colonIndex = remainingString.indexOf( ':' );
-		}
-
-		final long minutes =
-				Long.parseLong( remainingString.substring( 0, colonIndex ) );
-
-		time += minutes * 60 * 1000;
-		remainingString = remainingString.substring( colonIndex + 1 );
-
-		final long seconds = Long.parseLong( remainingString );
-
-		time += seconds * 1000;
+		final String remainingString = this.getText().toString();
+		final long time = TimerEditTextUtils.calculateTime( remainingString );
 
 		return time;
 	}
