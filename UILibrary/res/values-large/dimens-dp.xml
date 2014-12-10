@@ -18,6 +18,7 @@
 	<dimen name="_40dp">120dp</dimen>
 	<dimen name="_42dp">126dp</dimen>
 	<dimen name="_60dp">180dp</dimen>
+	<dimen name="_75dp">225dp</dimen>
 	<dimen name="_85dp">255dp</dimen>
 	<dimen name="_105dp">315dp</dimen>
 	<dimen name="_175dp">425dp</dimen>

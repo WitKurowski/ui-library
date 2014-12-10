@@ -18,6 +18,7 @@
 	<dimen name="_40dp">160dp</dimen>
 	<dimen name="_42dp">168dp</dimen>
 	<dimen name="_60dp">240dp</dimen>
+	<dimen name="_75dp">300dp</dimen>
 	<dimen name="_85dp">340dp</dimen>
 	<dimen name="_105dp">420dp</dimen>
 	<dimen name="_175dp">700dp</dimen>
