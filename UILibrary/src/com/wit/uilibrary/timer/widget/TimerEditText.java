@@ -1,6 +1,7 @@
 package com.wit.uilibrary.timer.widget;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
@@ -44,15 +45,19 @@ public class TimerEditText extends EditText {
 
 		@Override
 		public void onTick( final long millisUntilFinished ) {
-			final String timeRemaining = TimerEditTextUtils.createTimeString( millisUntilFinished );
-
-			this.timeRemainingTimerEditText.setText( timeRemaining );
+			this.timeRemainingTimerEditText.setRemainingTime( millisUntilFinished );
 			this.timeRemainingTimerEditText.clearFocus();
 		}
 	}
 
 	public interface OnCountDownFinishedListener {
 		public void onFinished();
+	}
+
+	public interface OnStatusChangedListener {
+		public void onPaused();
+
+		public void onStarted();
 	}
 
 	private class TimeRemainingOnClickListener implements View.OnClickListener {
@@ -155,6 +160,13 @@ public class TimerEditText extends EditText {
 							newTimeRemainingString );
 
 					this.timeRemainingTimerEditText.setAnimation( null );
+
+					final boolean running =
+							this.timeRemainingTimerEditText.isRunning();
+
+					if ( !running ) {
+						this.timeRemainingTimerEditText.setModifiedSinceLastStart( true );
+					}
 				}
 
 				this.modifying = false;
@@ -179,8 +191,6 @@ public class TimerEditText extends EditText {
 			new AlphaAnimation( 1.0f, 0.0f );
 	private static final AlphaAnimation TIMER_HIDE_ANIMATION =
 			new AlphaAnimation( 1.0f, 0.0f );
-	private final List<OnCountDownFinishedListener> onCountDownFinishedListeners =
-			new ArrayList<OnCountDownFinishedListener>();
 
 	static {
 		TimerEditText.TIMER_BLINKING_ANIMATION.setDuration( 100 );
@@ -193,6 +203,37 @@ public class TimerEditText extends EditText {
 
 		TimerEditText.TIMER_HIDE_ANIMATION.setFillAfter( true );
 	}
+
+	/**
+	 * All the callbacks that listen to when this {@link TimerEditText} counts
+	 * down to zero.
+	 */
+	private final List<OnCountDownFinishedListener> onCountDownFinishedListeners =
+			new ArrayList<OnCountDownFinishedListener>();
+
+	/**
+	 * All the callbacks that listen to when this {@link TimerEditText} is
+	 * started and paused.
+	 */
+	private final List<OnStatusChangedListener> onStatusChangedListeners =
+			new ArrayList<OnStatusChangedListener>();
+
+	/**
+	 * The current count-down timer, if any, that is decrementing the remaining
+	 * time.
+	 */
+	private TimerEditText.CountDownTimer countDownTimer;
+
+	/**
+	 * Whether the shown text has been modified by the user since the timer was
+	 * created or last started.
+	 */
+	private boolean modifiedSinceLastStart = false;
+
+	/**
+	 * The amount of time shown.
+	 */
+	private long remainingTime = 0;
 
 	public TimerEditText( final Context context, final AttributeSet attrs ) {
 		super( context, attrs );
@@ -232,27 +273,94 @@ public class TimerEditText extends EditText {
 		this.onCountDownFinishedListeners.add( onCountDownFinishedListener );
 	}
 
+	public void addOnStatusChangedListener(
+			final OnStatusChangedListener onStatusChangedListener ) {
+		this.onStatusChangedListeners.add( onStatusChangedListener );
+	}
+
 	public void blink() {
 		this.startAnimation( TimerEditText.TIMER_BLINKING_ANIMATION );
+	}
+
+	/**
+	 * Stops the count-down timer that is currently running, if any.
+	 */
+	public void cancel() {
+		if ( this.countDownTimer != null ) {
+			this.countDownTimer.cancel();
+			this.countDownTimer = null;
+		}
 	}
 
 	public void fadeOut() {
 		this.startAnimation( TimerEditText.TIMER_FADE_OUT_ANIMATION );
 	}
 
+	/**
+	 * Returns the time in the future at which the timer should hit zero.
+	 *
+	 * @return The time in the future at which the timer should hit zero.
+	 */
+	public long getEndTime() {
+		final long now = Calendar.getInstance().getTimeInMillis();
+		final long endTime = this.remainingTime + now;
+
+		return endTime;
+	}
+
 	public List<OnCountDownFinishedListener> getOnCountDownFinishedListeners() {
 		return this.onCountDownFinishedListeners;
 	}
 
-	public long getTime() {
-		final String remainingString = this.getText().toString();
-		final long time = TimerEditTextUtils.calculateTime( remainingString );
+	/**
+	 * Returns the amount of time remaining in the timer.
+	 *
+	 * @return The amount of time remaining in the timer.
+	 */
+	public long getRemainingTime() {
+		this.recalculateRemainingTimeIfNeeded();
 
-		return time;
+		return this.remainingTime;
 	}
 
 	public void hide() {
 		this.startAnimation( TimerEditText.TIMER_HIDE_ANIMATION );
+	}
+
+	/**
+	 * Returns whether a count-down timer is currently running.
+	 *
+	 * @return Whether a count-down timer is currently running.
+	 */
+	public boolean isRunning() {
+		final boolean running = this.countDownTimer != null;
+
+		return running;
+	}
+
+	/**
+	 * Pauses the count-down for this {@link TimerEditText}.
+	 */
+	public void pause() {
+		this.cancel();
+
+		for ( final OnStatusChangedListener onStatusChangedListener : this.onStatusChangedListeners ) {
+			onStatusChangedListener.onPaused();
+		}
+	}
+
+	/**
+	 * Updates the internally-stored "remaining time" if the user has manually
+	 * changed it since it was last calculated.
+	 */
+	private void recalculateRemainingTimeIfNeeded() {
+		if ( this.modifiedSinceLastStart ) {
+			final String remainingTimeString = this.getText().toString();
+
+			this.remainingTime =
+					TimerEditTextUtils.calculateTime( remainingTimeString );
+			this.modifiedSinceLastStart = false;
+		}
 	}
 
 	public void removeAllOnCountDownFinishedListeners() {
@@ -264,7 +372,14 @@ public class TimerEditText extends EditText {
 		this.onCountDownFinishedListeners.remove( onCountDownFinishedListener );
 	}
 
+	public void removeOnStatusChangedListener(
+			final OnStatusChangedListener onStatusChangedListener ) {
+		this.onStatusChangedListeners.remove( onStatusChangedListener );
+	}
+
 	public void reset() {
+		this.remainingTime = 0;
+
 		this.setText( TimerEditText.DEFAULT_TIME_REMAINING_STRING );
 		this.setSelection( TimerEditText.DEFAULT_TIME_REMAINING_STRING.length() );
 
@@ -274,6 +389,8 @@ public class TimerEditText extends EditText {
 	}
 
 	public void reset( final Editable editable ) {
+		this.remainingTime = 0;
+
 		editable.replace( 0, editable.length(),
 				TimerEditText.DEFAULT_TIME_REMAINING_STRING );
 		this.setSelection( TimerEditText.DEFAULT_TIME_REMAINING_STRING.length() );
@@ -294,6 +411,49 @@ public class TimerEditText extends EditText {
 		}
 	}
 
+	/**
+	 * Calculates and updates the amount of time that is shown based on the
+	 * given end time.
+	 *
+	 * @param endTime
+	 *            The time in the future at which the timer should hit zero.
+	 */
+	public void setEndTime( final long endTime ) {
+		final long now = Calendar.getInstance().getTimeInMillis();
+		final long remainingTime = endTime - now;
+
+		this.setRemainingTime( remainingTime );
+	}
+
+	/**
+	 * Sets whether the shown text has been modified by the user since the timer
+	 * was created or last started.
+	 *
+	 * @param modifiedSinceLastRun
+	 *            Whether the shown text has been modified by the user since the
+	 *            timer was created or last started.
+	 */
+	public void setModifiedSinceLastStart( final boolean modifiedSinceLastStart ) {
+		this.modifiedSinceLastStart = modifiedSinceLastStart;
+	}
+
+	/**
+	 * Updates the amount of time shown.
+	 *
+	 * @param remainingTime
+	 *            The new amount of time to show.
+	 */
+	public void setRemainingTime( final long remainingTime ) {
+		this.remainingTime = remainingTime;
+
+		final String remainingTimeString =
+				TimerEditTextUtils.createTimeString( remainingTime );
+
+		this.setText( remainingTimeString );
+
+		this.modifiedSinceLastStart = false;
+	}
+
 	private void setTypeface() {
 		final Context context = this.getContext();
 		final AssetManager assetManager = context.getAssets();
@@ -301,5 +461,28 @@ public class TimerEditText extends EditText {
 				Typeface.createFromAsset( assetManager, "font/Inconsolata.otf" );
 
 		this.setTypeface( typeface );
+	}
+
+	/**
+	 * Starts the count-down for this {@link TimerEditText}.
+	 */
+	public void start() {
+		this.recalculateRemainingTimeIfNeeded();
+
+		if ( this.remainingTime > 0 ) {
+			this.countDownTimer =
+					new TimerEditText.CountDownTimer( this.remainingTime, 100,
+							this );
+
+			this.countDownTimer.start();
+
+			for ( final OnStatusChangedListener onStatusChangedListener : this.onStatusChangedListeners ) {
+				onStatusChangedListener.onStarted();
+			}
+		} else {
+			for ( final TimerEditText.OnCountDownFinishedListener onCountDownFinishedListener : this.onCountDownFinishedListeners ) {
+				onCountDownFinishedListener.onFinished();
+			}
+		}
 	}
 }
