@@ -1,0 +1,8 @@
+<resources>
+	<dimen name="_6sp">9sp</dimen>
+	<dimen name="_8sp">12sp</dimen>
+	<dimen name="_9sp">13.5sp</dimen>
+	<dimen name="_10sp">15sp</dimen>
+	<dimen name="_12sp">18sp</dimen>
+	<dimen name="_14sp">21sp</dimen>
+</resources>
